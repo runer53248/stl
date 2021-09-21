@@ -2,8 +2,6 @@
 #include <string>
 #include <vector>
 #include "Result.hpp"
-
-//will parse chars to numbers or operations containers
 struct Parsing_Iterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;

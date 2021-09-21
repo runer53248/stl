@@ -44,7 +44,7 @@ void print_result(Value value){
 
 Result::Result(const std::vector<std::string>& args, const std::vector<char>& op)
     : op_(op) {
-    std::transform(  //convert string numbers to double numbers and check correctness
+    std::transform(
         args.cbegin(),
         args.cend(),
         std::back_inserter(numbers_),
@@ -73,23 +73,26 @@ CalculationResult Result::invoke(const CommandsMap& commands) const {
     print_op(op_);
     print_args(numbers_);
 
-    if (errorCode_ != ErrorCode::OK) {  //conversion strings to numbers fail
+    if (errorCode_ != ErrorCode::OK) {
         return print_and_return_error_result(errorCode_);
     }
 
-    auto it = commands.cbegin();
-    for (const auto& operation : op_) {  // operations container have character that don't exist as commands key
+    if(op_.empty()){
+        return print_and_return_error_result(ErrorCode::BadFormat);
+    }
+
+    CommandsMap::const_iterator it;
+    for (const auto& operation : op_) {
         it = commands.find(operation);
         if (it == commands.cend() && operation != SeparatorFormat::illegalFormat) {
             return print_and_return_error_result(ErrorCode::BadCharacter);
         }
     }
 
-    if (op_.size() != 1 || op_.front() == SeparatorFormat::illegalFormat) {  //more than one operation or illegalFormat separator
+    if (op_.size() != 1 || op_.front() == SeparatorFormat::illegalFormat) {
         return print_and_return_error_result(ErrorCode::BadFormat);
     }
-
-    auto [error, value] = it->second(numbers_.cbegin(), numbers_.cend());  //call operation
+    const auto [error, value] = it->second(numbers_.cbegin(), numbers_.cend());
 
     if (error != ErrorCode::OK) {
         return print_and_return_error_result(error);

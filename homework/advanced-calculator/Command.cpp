@@ -20,7 +20,7 @@ CalculationResult Command::operator()(Numbers::const_iterator num, Numbers::cons
         result = callback1_(par1);
     }
 
-    if (result.index()) {// 0 - Value, 1 - ErrorCode
+    if (result.index()) {
         return CalculationResult{std::get<ErrorCode>(result), {}};
     }
     return CalculationResult{ErrorCode::OK, std::get<Value>(result)};
